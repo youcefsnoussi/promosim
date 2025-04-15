@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Missions List</title>
+    <link rel="stylesheet" href="/css/missions.css" />
+</head>
+<body>
+    <h1>Mission List</h1>
+    <div>
+        <a href="/missions/create">Create New Mission</a>
+    </div>
+    
+    <!-- Search Form -->
+    <form action="/missions/search" method="get">
+        <label for="missionType">Mission Type:</label>
+        <input type="text" name="missionType" id="missionType" th:value="${criteria.missionType}" />
+        
+        <label for="departureLocation">Departure Location:</label>
+        <input type="text" name="departureLocation" id="departureLocation" th:value="${criteria.departureLocation}" />
+        
+        <label for="destination">Destination:</label>
+        <input type="text" name="destination" id="destination" th:value="${criteria.destination}" />
+        
+        <label for="vehiclePlateNumber">Vehicle Plate Number:</label>
+        <input type="text" name="vehiclePlateNumber" id="vehiclePlateNumber" th:value="${criteria.vehiclePlateNumber}" />
+        
+        <label for="driverFirstName">Driver First Name:</label>
+        <input type="text" name="driverFirstName" id="driverFirstName" th:value="${criteria.driverFirstName}" />
+        
+        <label for="driverLastName">Driver Last Name:</label>
+        <input type="text" name="driverLastName" id="driverLastName" th:value="${criteria.driverLastName}" />
+        
+        <label for="done">Mission Done:</label>
+        <input type="checkbox" name="done" th:checked="${criteria.done}" />
+        
+        <button type="submit">Search</button>
+    </form>
+
+    <!-- Missions Table -->
+    <table>
+        <thead>
+            <tr>
+                <th>Mission Type</th>
+                <th>Departure Location</th>
+                <th>Destination</th>
+                <th>Vehicle</th>
+                <th>Driver</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="mission : ${missions}">
+                <td th:text="${mission.missionType}"></td>
+                <td th:text="${mission.departureLocation}"></td>
+                <td th:text="${mission.destination}"></td>
+                <td th:text="${mission.vehicle.plateNumber}"></td>
+                <td th:text="${mission.driver.firstName + ' ' + mission.driver.lastName}"></td>
+                <td th:text="${mission.done ? 'Completed' : 'In Progress'}"></td>
+                <td>
+                    <a th:href="@{/missions/edit/{id}(id=${mission.id})}">Edit</a>
+                    <a th:href="@{/missions/delete/{id}(id=${mission.id})}" onclick="return confirm('Are you sure?');">Delete</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Vehicle</title>
+    <link rel="stylesheet" href="/css/missions.css">
+    <script src="/js/assign-vehicle.js" defer></script>
+</head>
+<body>
+
+    <h1>Select Vehicle</h1>
+
+    <!-- Assign Vehicle Button -->
+    <button id="assignVehicleBtn" class="btn btn-primary" onclick="toggleSearchForm()">Assign Vehicle</button>
+
+    <!-- Search Button to Toggle Search Form -->
+    <button id="searchBtn" class="btn btn-secondary" onclick="toggleSearchForm()">Search</button>
+
+    <!-- Search Form (Initially hidden) -->
+    <div id="searchForm" style="display:none;">
+        <form action="/missions/select-vehicle" method="get">
+            <div>
+                <label for="plateNumber">Plate Number:</label>
+                <input type="text" id="plateNumber" name="plateNumber">
+            </div>
+            <div>
+                <label for="brand">Brand:</label>
+                <input type="text" id="brand" name="brand">
+            </div>
+            <div>
+                <label for="model">Model:</label>
+                <input type="text" id="model" name="model">
+            </div>
+            <div>
+                <label for="type">Type:</label>
+                <input type="text" id="type" name="type">
+            </div>
+            <div>
+                <label for="fuelType">Fuel Type:</label>
+                <input type="text" id="fuelType" name="fuelType">
+            </div>
+            <div>
+                <label for="vin">VIN:</label>
+                <input type="text" id="vin" name="vin">
+            </div>
+            <div>
+                <label for="lastServiceDate">Last Service Date:</label>
+                <input type="date" id="lastServiceDate" name="lastServiceDate">
+            </div>
+            <div>
+                <label for="nextServiceDate">Next Service Date:</label>
+                <input type="date" id="nextServiceDate" name="nextServiceDate">
+            </div>
+            <div>
+                <label for="insuranceExpiryDate">Insurance Expiry Date:</label>
+                <input type="date" id="insuranceExpiryDate" name="insuranceExpiryDate">
+            </div>
+            <div>
+                <label for="address">Address:</label>
+                <input type="text" id="address" name="address">
+            </div>
+            <div>
+                <label for="nextMaintenanceDate">Next Maintenance Date:</label>
+                <input type="date" id="nextMaintenanceDate" name="nextMaintenanceDate">
+            </div>
+            <div>
+                <label for="maintenanceType">Maintenance Type:</label>
+                <input type="text" id="maintenanceType" name="maintenanceType">
+            </div>
+            <button type="submit">Search</button>
+        </form>
+    </div>
+
+    <!-- Available Vehicles List -->
+    <h2>Available Vehicles:</h2>
+    <div id="vehicleList" class="vehicle-list">
+        <ul>
+            <th:block th:each="vehicle : ${vehicles}">
+                <li>
+                    <span th:text="${vehicle.plateNumber}"></span> <!-- Vehicle Plate -->
+                    <span th:text="${vehicle.brand}"></span> <!-- Vehicle Brand -->
+                    <span th:text="${vehicle.model}"></span> <!-- Vehicle Model -->
+                    <span th:text="${vehicle.type}"></span> <!-- Vehicle Type -->
+                    <span th:text="${vehicle.fuelType}"></span> <!-- Fuel Type -->
+                    <span th:text="${vehicle.vin}"></span> <!-- VIN -->
+                    <span th:text="${vehicle.lastServiceDate}"></span> <!-- Last Service Date -->
+                    <span th:text="${vehicle.nextServiceDate}"></span> <!-- Next Service Date -->
+                    <span th:text="${vehicle.insuranceExpiryDate}"></span> <!-- Insurance Expiry Date -->
+                    <span th:text="${vehicle.address}"></span> <!-- Address -->
+                    <span th:text="${vehicle.nextMaintenanceDate}"></span> <!-- Next Maintenance Date -->
+                    <span th:text="${vehicle.maintenanceType}"></span> <!-- Maintenance Type -->
+                    <button class="assign-button" th:onclick="'assignVehicle(' + ${vehicle.id} + ')'" >Assign</button>
+                </li>
+            </th:block>
+        </ul>
+    </div>
+
+    <script>
+        // Toggle the display of the search form
+        function toggleSearchForm() {
+            var searchForm = document.getElementById('searchForm');
+            var vehicleList = document.getElementById('vehicleList');
+            var searchBtn = document.getElementById('searchBtn');
+            var assignVehicleBtn = document.getElementById('assignVehicleBtn');
+            
+            if (searchForm.style.display === 'none') {
+                searchForm.style.display = 'block';
+                searchBtn.innerText = 'Hide Search';
+                vehicleList.style.display = 'none'; // Hide vehicle list when searching
+                assignVehicleBtn.style.display = 'none'; // Hide "Assign Vehicle" button
+            } else {
+                searchForm.style.display = 'none';
+                searchBtn.innerText = 'Search';
+                vehicleList.style.display = 'block'; // Show vehicle list again
+                assignVehicleBtn.style.display = 'block'; // Show "Assign Vehicle" button again
+            }
+        }
+    </script>
+
+</body>
+</html>

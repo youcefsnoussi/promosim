@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Formulaire de véhicule</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+    <h1 th:text="${vehicle.id == null ? 'Créer un nouveau véhicule' : 'Modifier le véhicule'}"></h1>
+
+    <form action="/vehicles/update" method="POST" th:object="${vehicle}">
+        <label for="brand">Marque:</label>
+        <input type="text" id="brand" th:field="*{brand}" placeholder="Marque" required>
+        
+        <label for="model">Modèle:</label>
+        <input type="text" id="model" th:field="*{model}" placeholder="Modèle" required>
+        
+        <label for="plateNumber">Numéro de plaque:</label>
+        <input type="text" id="plateNumber" th:field="*{plateNumber}" placeholder="Numéro de plaque" required>
+        
+        <label for="type">Type:</label>
+        <input type="text" id="type" th:field="*{type}" placeholder="Type" required>
+        
+        <label for="fuelType">Type de carburant:</label>
+        <input type="text" id="fuelType" th:field="*{fuelType}" placeholder="Carburant" required>
+        
+        <label for="vin">Numéro VIN:</label>
+        <input type="text" id="vin" th:field="*{vin}" placeholder="VIN" required>
+        
+        <label for="lastServiceDate">Date du dernier service:</label>
+        <input type="date" id="lastServiceDate" th:field="*{lastServiceDate}">
+        
+        <label for="nextServiceDate">Prochaine date de service:</label>
+        <input type="date" id="nextServiceDate" th:field="*{nextServiceDate}">
+        
+        <label for="insuranceExpiryDate">Date d'expiration de l'assurance:</label>
+        <input type="date" id="insuranceExpiryDate" th:field="*{insuranceExpiryDate}">
+        
+        <label for="address">Adresse:</label>
+        <input type="text" id="address" th:field="*{address}" placeholder="Adresse">
+        
+        <label for="nextMaintenanceDate">Prochaine maintenance:</label>
+        <input type="date" id="nextMaintenanceDate" th:field="*{nextMaintenanceDate}">
+        
+        <label for="maintenanceType">Type de maintenance:</label>
+        <input type="text" id="maintenanceType" th:field="*{maintenanceType}" placeholder="Type de maintenance">
+        
+        <button type="submit">Sauvegarder</button>
+    </form>
+    
+    <a href="/vehicles"><button>Retour à la liste des véhicules</button></a>
+</body>
+</html>

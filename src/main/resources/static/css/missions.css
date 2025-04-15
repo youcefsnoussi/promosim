@@ -1,0 +1,145 @@
+/* Existing Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 30px;
+    background-color: #f9f9f9;
+}
+
+h1 {
+    color: #333;
+}
+
+label {
+    display: inline-block;
+    width: 180px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+input, textarea, button {
+    padding: 8px;
+    margin: 5px 0;
+    width: 300px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+button {
+    width: auto;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* New Styles for Vehicle Assignment Interface */
+#vehicleList {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+#vehicleList ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#vehicleList li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+#vehicleList li:last-child {
+    border-bottom: none;
+}
+
+.assign-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.assign-button:hover {
+    opacity: 0.8;
+}
+
+/* Styles for the Search Form */
+#searchForm {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+#searchForm input {
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 200px;
+}
+
+#searchForm button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+#searchForm button:hover {
+    opacity: 0.8;
+}
+
+/* Styling for each form field label */
+#searchForm label {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* Button Styling for Assign Vehicle and Search */
+#assignVehicleBtn,
+#searchBtn {
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+    border-radius: 4px;
+}
+
+#assignVehicleBtn {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#assignVehicleBtn:hover {
+    background-color: #45a049;
+}
+
+#searchBtn {
+    background-color: #f1f1f1;
+    color: #333;
+    border: 1px solid #ccc;
+}
+
+#searchBtn:hover {
+    background-color: #e0e0e0;
+}

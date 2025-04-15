@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Liste des conducteurs</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/drivers.css}">
+</head>
+<body>
+    <h1>Liste des conducteurs</h1>
+
+    <!-- Search Form -->
+    <form th:action="@{/drivers/search}" method="get">
+        <input type="text" name="id" placeholder="ID">
+        <input type="text" name="firstName" placeholder="Prénom">
+        <input type="text" name="lastName" placeholder="Nom de famille">
+        <input type="text" name="phoneNumber" placeholder="Téléphone">
+        <input type="text" name="licenseNumber" placeholder="Permis">
+        <input type="text" name="homeAddress" placeholder="Adresse">
+        <input type="date" name="dateOfBirth" placeholder="Date de naissance">
+        <button type="submit">Rechercher</button>
+    </form>
+
+    <!-- Link to create driver -->
+    <a th:href="@{/drivers/create}">Créer un nouveau conducteur</a>
+
+    <!-- Drivers Table -->
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Prénom</th>
+                <th>Nom</th>
+                <th>Téléphone</th>
+                <th>Permis</th>
+                <th>Adresse</th>
+                <th>Date de naissance</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="driver : ${drivers}">
+                <td th:text="${driver.id}">ID</td>
+                <td th:text="${driver.firstName}">Prénom</td>
+                <td th:text="${driver.lastName}">Nom</td>
+                <td th:text="${driver.phoneNumber}">Téléphone</td>
+                <td th:text="${driver.licenseNumber}">Permis</td>
+                <td th:text="${driver.homeAddress}">Adresse</td>
+                <td th:text="${driver.dateOfBirth}">Date</td>
+                <td>
+                    <a th:href="@{'/drivers/edit/' + ${driver.id}}">Modifier</a>
+                    <!-- Add delete if needed -->
+                    <a th:href="@{'/drivers/delete/' + ${driver.id}}"
+                    onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce conducteur ?');">Supprimer</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

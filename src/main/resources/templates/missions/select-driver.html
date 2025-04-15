@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Choisir un Chauffeur</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+    <h1>Choisir un Chauffeur</h1>
+    <p>Liste temporaire de chauffeurs — à remplacer avec moteur de recherche plus tard.</p>
+    <ul>
+        <li th:each="d : ${drivers}" th:text="${d.firstName + ' ' + d.lastName}"></li>
+    </ul>
+    <a href="/missions/create">Retour</a>
+</body>
+</html>

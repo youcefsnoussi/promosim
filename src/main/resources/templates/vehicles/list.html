@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Liste des Véhicules</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div class="container mt-5">
+    <h1>Liste des Véhicules</h1>
+
+    <!-- Search Form -->
+    <div>
+        <form th:action="@{/vehicles/search}" method="get" class="mb-3">
+            <div class="row">
+                <div class="col-md-3">
+                    <input type="text" name="plateNumber" class="form-control" placeholder="Numéro de plaque" />
+                </div>
+                <div class="col-md-3">
+                    <input type="text" name="brand" class="form-control" placeholder="Marque" />
+                </div>
+                <div class="col-md-3">
+                    <input type="text" name="model" class="form-control" placeholder="Modèle" />
+                </div>
+                <div class="col-md-3">
+                    <input type="number" name="year" class="form-control" placeholder="Année" />
+                </div>
+                <div class="col-md-3">
+                    <input type="text" name="fuelType" class="form-control" placeholder="Type de carburant" />
+                </div>
+                <div class="col-md-3">
+                    <input type="text" name="vin" class="form-control" placeholder="VIN" />
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary">Rechercher</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Add Vehicle Button -->
+    <div>
+        <a href="#" th:href="@{/vehicles/create}" class="button-add">Ajouter un Véhicule</a>
+    </div>
+
+    <!-- Vehicle List Table -->
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Numéro de plaque</th>
+                <th scope="col">Marque</th>
+                <th scope="col">Modèle</th>
+                <th scope="col">Année</th>
+                <th scope="col">Kilométrage</th>
+                <th scope="col">Type de carburant</th>
+                <th scope="col">Date du dernier service</th>
+                <th scope="col">Prochaine maintenance</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="vehicle : ${vehicles}">
+                <td th:text="${vehicle.plateNumber}"></td>
+                <td th:text="${vehicle.brand}"></td>
+                <td th:text="${vehicle.model}"></td>
+                <td th:text="${vehicle.year}"></td>
+                <td th:text="${vehicle.mileage}"></td>
+                <td th:text="${vehicle.fuelType}"></td>
+                <td th:text="${vehicle.lastServiceDate}"></td>
+                <td th:text="${vehicle.nextMaintenanceDate}"></td>
+                <td>
+                    <a th:href="@{/vehicles/edit/{vin}(vin=${vehicle.vin})}" class="btn btn-warning">Modifier</a>
+                    <form th:action="@{/vehicles/delete/{vin}(vin=${vehicle.vin})}" method="post" class="d-inline-block"
+                        onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce véhicule ?')">
+                        <button type="submit" class="button-delete">Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

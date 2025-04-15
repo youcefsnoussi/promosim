@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Créer un Conducteur</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/drivers.css}">
+</head>
+<body>
+    <h1>Créer un nouveau conducteur</h1>
+
+    <form th:action="@{/drivers/create}" th:object="${driver}" method="post">
+        <label for="firstName">Prénom:</label>
+        <input type="text" id="firstName" th:field="*{firstName}" required><br>
+
+        <label for="lastName">Nom:</label>
+        <input type="text" id="lastName" th:field="*{lastName}" required><br>
+
+        <label for="phoneNumber">Numéro de téléphone:</label>
+        <input type="text" id="phoneNumber" th:field="*{phoneNumber}" required><br>
+
+        <label for="licenseNumber">Numéro du permis:</label>
+        <input type="text" id="licenseNumber" th:field="*{licenseNumber}" required><br>
+
+        <label for="homeAddress">Adresse:</label>
+        <input type="text" id="homeAddress" th:field="*{homeAddress}"><br>
+
+        <label for="dateOfBirth">Date de naissance:</label>
+        <input type="date" id="dateOfBirth" th:field="*{dateOfBirth}"><br>
+
+        <button type="submit">Créer</button>
+    </form>
+
+    <a th:href="@{/drivers}">Retour à la liste des conducteurs</a>
+</body>
+</html>
