@@ -22,11 +22,13 @@ public class VehicleService {
     private MissionRepository missionRepository;
 
     public List<Vehicle> getAvailableVehicles() {
-        List<Vehicle> allVehicles = vehicleRepository.findAll();
-        return allVehicles.stream()
-            .filter(vehicle -> !missionRepository.existsByVehicleIdAndDoneFalse(vehicle.getId()))
-            .toList();
+        List<Long> busyIds = missionRepository.findBusyVehicleIds();
+        if (busyIds.isEmpty()) {
+            return vehicleRepository.findAll();
+        }
+        return vehicleRepository.findByIdNotIn(busyIds);
     }
+    
 
 
 
@@ -120,6 +122,8 @@ public class VehicleService {
             })
             .orElseThrow(() -> new RuntimeException("Vehicle not found with VIN: " + updatedVehicle.getVin()));
     }
+
+    
 }
 
 

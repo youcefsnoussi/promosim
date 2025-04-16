@@ -1,12 +1,11 @@
 package com.promosim.gestionparc.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
-import com.promosim.gestionparc.SearchCriteria.MissionSearchCriteria;
 import com.promosim.gestionparc.model.Mission;
 import com.promosim.gestionparc.repository.MissionRepository;
 import com.promosim.gestionparc.specification.MissionSpecifications;
@@ -27,9 +26,43 @@ public class MissionService {
         return missionRepository.findAll();
     }
 
-    public List<Mission> searchMissions(MissionSearchCriteria criteria) {
-        Specification<Mission> spec = MissionSpecifications.build(criteria);
+    public List<Mission> searchMissions(Long id, String name, String vehicle, String driver, String destination,
+            String departureLocation, LocalDate departureDate, LocalDate arrivalDate, String missionType, boolean done) {
+        Specification<Mission> spec = Specification.where(null);
+
+        if (id != null) {
+            spec = spec.and(MissionSpecifications.hasId(id));
+        }
+        if (name != null && !name.isEmpty()) {
+            spec = spec.and(MissionSpecifications.hasName(name.trim()));
+        }
+        if (vehicle != null && !vehicle.isEmpty()) {
+            spec = spec.and(MissionSpecifications.hasVehicle(vehicle.trim()));
+        }
+        if (driver != null && !driver.isEmpty()) {
+            spec = spec.and(MissionSpecifications.hasDriver(driver.trim()));
+        }
+        if (destination != null && !destination.isEmpty()) {
+            spec = spec.and(MissionSpecifications.hasDestination(destination.trim()));
+        }
+        if (departureLocation != null && !departureLocation.isEmpty()) {
+            spec = spec.and(MissionSpecifications.hasDepartureLocation(departureLocation.trim()));
+        }
+        if (departureDate != null) {
+            spec = spec.and(MissionSpecifications.hasDepartureDate(departureDate));
+        }
+        if (arrivalDate != null) {
+            spec = spec.and(MissionSpecifications.hasArrivalDate(arrivalDate));
+        }
+        if (missionType != null && !missionType.isEmpty()) {
+            spec = spec.and(MissionSpecifications.hasMissionType(missionType.trim()));
+        }
+        if (done) {
+            spec = spec.and(MissionSpecifications.isDone(done));
+        }
+
         return missionRepository.findAll(spec);
+       
     }
 
     public Mission getMissionById(Long id) {

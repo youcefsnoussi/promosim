@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.promosim.gestionparc.model.Driver;
 import com.promosim.gestionparc.service.DriverService;
+import com.promosim.gestionparc.service.MissionService;
+import com.promosim.gestionparc.service.VehicleService;
 
 @Controller
 @RequestMapping("/drivers")
@@ -22,6 +24,19 @@ public class DriverController {
 
     @Autowired
     private DriverService driverService;
+    @Autowired
+    private VehicleService vehicleService;
+    @Autowired
+    private MissionService missionService;
+
+    @GetMapping("/gestion")
+public String showGestionPage(Model model) {
+    model.addAttribute("vehicles", vehicleService.getAllVehicles());
+    model.addAttribute("drivers", driverService.getAllDrivers());
+    model.addAttribute("missions", missionService.getAllMissions());
+    return "gestion";
+}
+
 
     @GetMapping
     public String listDrivers(Model model){

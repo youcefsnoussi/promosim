@@ -15,7 +15,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
 import com.promosim.gestionparc.model.Vehicle;
+import com.promosim.gestionparc.service.DriverService;
+import com.promosim.gestionparc.service.MissionService;
 import com.promosim.gestionparc.service.VehicleService;
 
 import jakarta.validation.Valid;
@@ -27,6 +30,19 @@ import jakarta.validation.Valid;
 public class VehicleController {
     @Autowired
     private VehicleService vehicleService;
+    @Autowired
+    private DriverService driverService;
+    @Autowired
+    private MissionService missionService;
+
+    @GetMapping("/gestion")
+public String showGestionPage(Model model) {
+    model.addAttribute("vehicles", vehicleService.getAllVehicles());
+    model.addAttribute("drivers", driverService.getAllDrivers());
+    model.addAttribute("missions", missionService.getAllMissions());
+    return "gestion";
+}
+
 
     @GetMapping("")
     public String listVehicles(Model model) {
@@ -47,7 +63,7 @@ public class VehicleController {
     @PostMapping("")
     public String createVehicle(@Valid @ModelAttribute("vehicle") Vehicle vehicle, BindingResult result) {
         if(result.hasErrors()) {
-            return "vehicles/edit"; // Return to the form view if there are validation errors
+            return "vehicles/create"; // Return to the form view if there are validation errors
         }
         vehicleService.createVehicle(vehicle);
         return "redirect:/vehicles"; // Redirect to the list of vehicles after creation
@@ -55,26 +71,31 @@ public class VehicleController {
     
 
     @GetMapping("/search")
-    public String searchVehicles(
-        @RequestParam(required = false) Long id,
-        @RequestParam(required = false) String brand,
-        @RequestParam(required = false) String model,
-        @RequestParam(required = false) String plateNumber,
-        @RequestParam(required = false) String type,
-        @RequestParam(required = false) String fuelType,
-        @RequestParam(required = false) String vin,
-        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate lastServiceDate,
-        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate nextServiceDate,
-        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate insuranceExpiryDate,
-        @RequestParam(required = false) String address,
-        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate nextMaintenanceDate,
-        @RequestParam(required = false) String maintenanceType, Model modelAttr) {
-        List<Vehicle> vehicles = vehicleService.searchVehicles(id, brand, model, plateNumber, type, fuelType, vin,
-                lastServiceDate, nextServiceDate, insuranceExpiryDate, address, nextMaintenanceDate, maintenanceType);
-        modelAttr.addAttribute("vehicles", vehicles);
-        return "vehicles/list";
-        
+public String searchVehicles(
+    @RequestParam(required = false) Long id,
+    @RequestParam(required = false) String brand,
+    @RequestParam(required = false) String model,
+    @RequestParam(required = false) String plateNumber,
+    @RequestParam(required = false) String type,
+    @RequestParam(required = false) String fuelType,
+    @RequestParam(required = false) String vin,
+    @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate lastServiceDate,
+    @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate nextServiceDate,
+    @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate insuranceExpiryDate,
+    @RequestParam(required = false) String address,
+    @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate nextMaintenanceDate,
+    @RequestParam(required = false) String maintenanceType,
+    Model modelAttr) {
+
+    List<Vehicle> vehicles = vehicleService.searchVehicles(id, brand, model, plateNumber, type, fuelType, vin,
+            lastServiceDate, nextServiceDate, insuranceExpiryDate, address, nextMaintenanceDate, maintenanceType);
+
+    modelAttr.addAttribute("vehicles", vehicles);
+
+    return "vehicles/list";
 }
+
+    
 
     @GetMapping("/edit/{vin}")
     public String showEditForm(@PathVariable("vin") String vin, Model model) {

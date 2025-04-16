@@ -10,14 +10,17 @@ import org.springframework.stereotype.Service;
 import com.promosim.gestionparc.model.Driver;
 import com.promosim.gestionparc.repository.DriverRepository;
 import com.promosim.gestionparc.specification.DriverSpecifications;
+import com.promosim.gestionparc.repository.MissionRepository;
 
 import jakarta.transaction.Transactional;
 
 @Service
 public class DriverService {
-
     @Autowired
     private DriverRepository driverRepository;
+
+    @Autowired
+    private MissionRepository missionRepository;
 
     public Driver createDriver(Driver driver) {
         return driverRepository.save(driver);
@@ -73,6 +76,15 @@ public class DriverService {
     public void deleteDriverById(Long id) {
         driverRepository.deleteById(id);
     }
+
+    public List<Driver> getAvailableDrivers() {
+        List<Long> busyIds = missionRepository.findBusyDriverIds();
+        if (busyIds.isEmpty()) {
+            return driverRepository.findAll();
+        }
+        return driverRepository.findByIdNotIn(busyIds);
+    }
+    
 
 
 

@@ -1,5 +1,6 @@
 package com.promosim.gestionparc.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,6 +17,8 @@ import jakarta.transaction.Transactional;
 public interface VehicleRepository extends JpaRepository<Vehicle, Long>, JpaSpecificationExecutor<Vehicle> {
 
     Optional<Vehicle> findByVin(String vin);
+    List<Vehicle> findByIdNotIn(List<Long> ids);
+
 
 
     @Transactional
