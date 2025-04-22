@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+    <title>Modifier un véhicule</title>
+</head>
+<body>
+<h1>Modifier un véhicule</h1>
+
+<form th:action="@{'/vehicles/edit/' + ${vehicle.id}}" th:object="${vehicle}" method="post">
+    <label>Immatriculation:</label>
+    <input type="text" th:field="*{plateNumber}" required /><br>
+
+    <label>Marque:</label>
+    <input type="text" th:field="*{brand}" /><br>
+
+    <label>Modèle:</label>
+    <input type="text" th:field="*{model}" /><br>
+
+    <label>Année:</label>
+    <input type="number" th:field="*{year}" /><br>
+
+    <label>Kilométrage:</label>
+    <input type="number" th:field="*{mileage}" /><br>
+
+    <label for="type">Type:</label>
+<select name="type" id="type">
+    <option value="TRUCK" th:selected="${vehicle.type == 'TRUCK'}">Camion</option>
+    <option value="CAR" th:selected="${vehicle.type == 'CAR'}">Voiture</option>
+    <option value="VAN" th:selected="${vehicle.type == 'VAN'}">Van</option>
+</select>
+
+    <label>Carburant:</label>
+    <input type="text" th:field="*{fuelType}" /><br>
+
+    <label>VIN:</label>
+    <input type="text" th:field="*{vin}" readonly /><br>
+
+    <label>Dernier entretien:</label>
+    <input type="date" th:field="*{lastServiceDate}" /><br>
+
+    <label>Prochain entretien:</label>
+    <input type="date" th:field="*{nextServiceDate}" /><br>
+
+    <label>Expiration assurance:</label>
+    <input type="date" th:field="*{insuranceExpiryDate}" /><br>
+
+    <label>Adresse:</label>
+    <input type="text" th:field="*{address}" /><br>
+
+    <label>Prochaine maintenance:</label>
+    <input type="date" th:field="*{nextMaintenanceDate}" /><br>
+
+    <label>Type maintenance:</label>
+    <input type="text" th:field="*{maintenanceType}" /><br>
+
+    <button type="submit">Enregistrer les modifications</button>
+</form>
+
+<a th:href="@{/vehicles}">← Retour à la liste</a>
+</body>
+</html>

@@ -92,4 +92,7 @@ public class MissionService {
     public void deleteMissionById(Long id) {
         missionRepository.deleteById(id);
     }
+    public List<Mission> getActiveMissionsByVehicleId(Long vehicleId) {
+        return missionRepository.findByVehicleIdAndDoneFalse(vehicleId);
+    }
 }

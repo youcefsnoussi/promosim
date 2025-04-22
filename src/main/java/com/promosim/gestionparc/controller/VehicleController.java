@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,7 +16,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.promosim.gestionparc.model.Mission;
 import com.promosim.gestionparc.model.Vehicle;
 import com.promosim.gestionparc.service.DriverService;
 import com.promosim.gestionparc.service.MissionService;
@@ -44,14 +48,33 @@ public String showGestionPage(Model model) {
 }
 
 
-    @GetMapping("")
-    public String listVehicles(Model model) {
-        List<Vehicle> vehicles = vehicleService.getAllVehicles();
-        model.addAttribute("vehicles", vehicles); // Add the list of vehicles to the model
-        return "vehicles/list"; // Return the name of the view (e.g., list.html)
+@GetMapping("")
+public String listVehicles(
+        @RequestParam(required = false) String plateNumber,
+        @RequestParam(required = false) String brand,
+        @RequestParam(required = false) String model,
+        @RequestParam(required = false) Integer year,
+        @RequestParam(required = false) Integer mileage,
+        @RequestParam(required = false) String type,
+        @RequestParam(required = false) String fuelType,
+        @RequestParam(required = false) String vin,
+        @RequestParam(required = false) String address,
+        Model modelAttr) {
+
+    boolean hasFilters = plateNumber != null || brand != null || model != null || year != null ||
+    mileage != null || type != null || fuelType != null || vin != null || address != null;
+
+    List<Vehicle> vehicles;
+    if (hasFilters) {
+        vehicles = vehicleService.searchVehicles(null, brand, model, plateNumber, type, fuelType, vin,
+    null, null, null, address, null, null);
+    } else {
+        vehicles = vehicleService.getAllVehicles();
     }
 
-
+    modelAttr.addAttribute("vehicles", vehicles);
+    return "vehicles/list";
+}
 
 
     @GetMapping("/create")
@@ -62,6 +85,7 @@ public String showGestionPage(Model model) {
 
     @PostMapping("")
     public String createVehicle(@Valid @ModelAttribute("vehicle") Vehicle vehicle, BindingResult result) {
+        System.out.println("Creating vehicle: " + vehicle);
         if(result.hasErrors()) {
             return "vehicles/create"; // Return to the form view if there are validation errors
         }
@@ -97,16 +121,16 @@ public String searchVehicles(
 
     
 
-    @GetMapping("/edit/{vin}")
-    public String showEditForm(@PathVariable("vin") String vin, Model model) {
-        Vehicle vehicle = vehicleService.getVehicleByVin(vin); // Assuming you have a method to get a vehicle by VIN
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable("id") Long id, Model model) {
+        Vehicle vehicle = vehicleService.getVehicleById(id); // Assuming you have a method to get a vehicle by VIN
         model.addAttribute("vehicle", vehicle);
         return "vehicles/edit"; // Return the name of the view (e.g., edit.html)
         
     }    
 
 
-    @PostMapping("/update")
+    @PostMapping("/edit/{id}")
     public String updateVehicle(@Valid @ModelAttribute("vehicle") Vehicle vehicle, BindingResult result) {
         if(result.hasErrors()) {
             return "vehicles/edit"; // Return to the form view if there are validation errors
@@ -115,14 +139,57 @@ public String searchVehicles(
         return "redirect:/vehicles"; // Redirect to the list of vehicles after update
     }
 
-    @PostMapping("/delete/{vin}")
-    public String deleteVehicleByVin(@PathVariable("vin") String vin, Model model) {
-            System.out.println("DELETING VIN: " + vin); // log to console
-            vehicleService.deleteVehicleByVin(vin);
-            List<Vehicle> vehicles = vehicleService.getAllVehicles(); // Fetch the updated list of vehicles
-            model.addAttribute("vehicles", vehicles); // Update the model with the new list
-            return "redirect:/vehicles"; // Redirect to the list of vehicles after deletion
+
+    @GetMapping("/{id}/delete-confirmation")
+    public String getDeleteConfirmationModal(@PathVariable Long id, Model model) {
+        Vehicle vehicle = vehicleService.getVehicleById(id); // or throw if not found
+        if (vehicle == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Vehicle not found");
         }
+        List<Mission> missions = missionService.getActiveMissionsByVehicleId(id);
+    
+        model.addAttribute("missions", missions);
+        model.addAttribute("vehicleId", id); // needed for delete button in modal
+    
+        return "fragments/modal-content :: missionList";
     }
+
+
+
+
+
+    @GetMapping("/delete/{id}")
+    public String deleteVehicle(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    System.out.println("🚨 Controller hit: trying to delete vehicle with ID = " + id);
+
+    if (vehicleService.isVehicleAssignedToAnyMission(id)) {
+        System.out.println("⚠️ Vehicle is assigned to a mission and cannot be deleted.");
+        redirectAttributes.addFlashAttribute("errorMessage", "Le véhicule est affecté à une mission et ne peut pas être supprimé.");
+        return "redirect:/vehicles";
+    }
+
+    vehicleService.deleteVehicle(id);
+    redirectAttributes.addFlashAttribute("successMessage", "Véhicule supprimé avec succès.");
+    return "redirect:/vehicles";
+    }
+
+    @GetMapping("/missions-assigned/{vehicleId}")
+    public String getMissionsAssignedToVehicle(@PathVariable Long vehicleId, Model model) {
+        List<Mission> missions = missionService.getActiveMissionsByVehicleId(vehicleId);
+        model.addAttribute("missions", missions);
+        return "vehicles/modal-content :: missionList";
+    }
+
+  
+
+
+        
+
+
+
+
+
+
+}
     
 

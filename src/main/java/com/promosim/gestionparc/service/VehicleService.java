@@ -2,6 +2,8 @@ package com.promosim.gestionparc.service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -35,12 +37,32 @@ public class VehicleService {
     public Vehicle createVehicle(Vehicle vehicle) {
         return vehicleRepository.save(vehicle);
     }
-    public void deleteVehicleByVin(String vin) {
-        vehicleRepository.deleteByVin(vin);
+
+    @Transactional
+    public void deleteVehicle(Long id) {
+    try {
+        Optional<Vehicle> optionalVehicle = vehicleRepository.findById(id);
+        if (optionalVehicle.isPresent()) {
+            Vehicle vehicle = optionalVehicle.get();
+
+            boolean isVehicleAssignedToOngoingMission = missionRepository.existsByVehicleIdAndDoneFalse(vehicle.getId());
+            if (isVehicleAssignedToOngoingMission) {
+                System.out.println("Vehicle with ID " + id + " is assigned to an ongoing mission and cannot be deleted."); // Add logging
+                throw new IllegalStateException("Ce véhicule est assigné à une mission en cours et ne peut pas être supprimé.");
+            }
+            vehicleRepository.delete(vehicle);
+            System.out.println("Vehicle with ID " + id + " has been deleted."); // Add logging
+        } else {
+            System.out.println("Vehicle with ID " + id + " not found."); // Add logging
+        }
+    } catch (Exception e) {
+        e.printStackTrace(); // Log any errors
+        throw new RuntimeException("Error deleting vehicle with VIN: " + id, e);
     }
-    public Vehicle getVehicleByVin(String vin) {
-        return vehicleRepository.findByVin(vin).orElse(null);
     }
+
+
+
 
     public List<Vehicle> getAllVehicles() {
         return vehicleRepository.findAll();
@@ -94,7 +116,7 @@ public class VehicleService {
 
     @Transactional
     public Vehicle updateVehicle(Vehicle updatedVehicle) {
-        return vehicleRepository.findByVin(updatedVehicle.getVin())
+        return vehicleRepository.findById(updatedVehicle.getId())
             .map(existingVehicle -> {
                 if (updatedVehicle.getMileage() != null) {
                     existingVehicle.setMileage(updatedVehicle.getMileage());
@@ -120,7 +142,17 @@ public class VehicleService {
                 // Save and return the updated vehicle
                 return vehicleRepository.save(existingVehicle);
             })
-            .orElseThrow(() -> new RuntimeException("Vehicle not found with VIN: " + updatedVehicle.getVin()));
+            .orElseThrow(() -> new RuntimeException("Vehicle not found with ID: " + updatedVehicle.getId()));
+    }
+    public boolean isVehicleAssignedToAnyMission(Long id) {
+        return missionRepository.existsByVehicleIdAndDoneFalse(id);
+    }
+
+
+
+
+    public Vehicle getVehicleById(Long id) {
+        return vehicleRepository.findById(id).orElse(null);
     }
 
     

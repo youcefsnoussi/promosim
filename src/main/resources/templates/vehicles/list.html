@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr"
+      th:fragment="vehicleList">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+    <title>Liste des Véhicules</title>
+    
+</head>
+<body>
+    <!-- src/main/resources/templates/vehicles/list.html -->
+<div th:fragment="vehicleList">
+    <div th:if="${successMessage}" style="color: green; font-weight: bold;">
+        <p th:text="${successMessage}"></p>
+    </div>
+    
+    <div th:if="${errorMessage}" style="color: red; font-weight: bold;">
+        <p th:text="${errorMessage}"></p>
+    </div>    
+    
+    <h1>Liste des Véhicules</h1>
+
+    <!-- Section de recherche -->
+    <form th:action="@{/vehicles/search}" method="get">
+        <fieldset>
+            <legend>Rechercher un véhicule</legend>
+            <input type="text" name="plateNumber" placeholder="Immatriculation">
+            <input type="text" name="brand" placeholder="Marque">
+            <input type="text" name="model" placeholder="Modèle">
+            <input type="text" name="vin" placeholder="VIN">
+            <label for="type">Type:</label>
+            <select name="type" id="type">
+                <option value="">-- Type --</option>
+                <option value="TRUCK" th:selected="${param.type != null and param.type == 'TRUCK'}">Camion</option>
+                <option value="CAR" th:selected="${param.type != null and param.type == 'CAR'}">Voiture</option>
+                <option value="VAN" th:selected="${param.type != null and param.type == 'VAN'}">Van</option>
+            </select>
+
+            <label for="fuelType">Carburant:</label>
+            <select name="fuelType" id="fuelType">
+                <option value="">-- Carburant --</option>
+                <option value="DIESEL" th:selected="${param.fuelType != null and param.fuelType == 'DIESEL'}">Diesel</option>
+                <option value="GASOLINE" th:selected="${param.fuelType != null and param.fuelType == 'GASOLINE'}">Essence</option>
+                <option value="ELECTRIC" th:selected="${param.fuelType != null and param.fuelType == 'ELECTRIC'}">Électrique</option>
+                <option value="HYBRID" th:selected="${param.fuelType != null and param.fuelType == 'HYBRID'}">Hybride</option>
+            </select>
+
+            <input type="date" name="lastServiceDate" placeholder="Dernier entretien">
+            <input type="date" name="nextServiceDate" placeholder="Prochain entretien">
+            <input type="date" name="insuranceExpiryDate" placeholder="Expiration assurance">
+            <input type="text" name="address" placeholder="Adresse">
+            <input type="date" name="nextMaintenanceDate" placeholder="Prochaine maintenance">
+            <input type="text" name="maintenanceType" placeholder="Type de maintenance">
+            <button type="submit">Rechercher</button>
+        </fieldset>
+    </form>
+
+    <form th:action="@{/vehicles/create}" method="get" style="display:inline;">
+        <button type="submit">Créer un véhicule</button>
+    </form>
+
+    <!-- Table des véhicules -->
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Immatriculation</th>
+                <th>Marque</th>
+                <th>Modèle</th>
+                <th>Année</th>
+                <th>Kilométrage</th>
+                <th>Type</th>
+                <th>Carburant</th>
+                <th>VIN</th>
+                <th>Adresse</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        <tr th:each="vehicle : ${vehicles}">
+            <td th:text="${vehicle.plateNumber}">-</td>
+            <td th:text="${vehicle.brand}">-</td>
+            <td th:text="${vehicle.model}">-</td>
+            <td th:text="${vehicle.year}">-</td>
+            <td th:text="${vehicle.mileage}">-</td>
+            <td th:text="${vehicle.type != null ? vehicle.type.getLabel(): 'Non défini'}">-</td>
+            <td th:text="${vehicle.fuelType}">-</td>
+            <td th:text="${vehicle.vin}">-</td>
+            <td th:text="${vehicle.address}">-</td>
+            <td>
+                <a th:href="@{'/vehicles/edit/' + ${vehicle.id}}">Modifier</a>
+                <button type="button" class="btn btn-danger btn-sm" 
+                        th:attr="onclick='showDeleteModal(' + ${vehicle.id} + ')'">
+                    Supprimer
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div id="dynamicModalContainer"></div>
+
+    <script>
+    let vehicleToDeleteId = null;
+
+    function showDeleteModal(id) {
+        vehicleToDeleteId = id;
+
+        fetch(`/vehicles/${id}/delete-confirmation`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Erreur de chargement du contenu du modal");
+                }
+                return response.text();
+            })
+            .then(html => {
+                document.getElementById('dynamicModalContainer').innerHTML = html;
+                const deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+                deleteModal.show();
+            })
+            .catch(error => console.error("Erreur lors du chargement du modal :", error));
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('click', function (event) {
+            if (event.target && event.target.id === 'confirmDeleteBtn') {
+                if (vehicleToDeleteId !== null) {
+                    window.location.href = `/vehicles/delete/${vehicleToDeleteId}`;
+                }
+            }
+        });
+    });
+    </script>
+</div>
+

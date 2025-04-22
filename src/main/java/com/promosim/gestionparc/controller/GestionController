@@ -1,0 +1,23 @@
+package com.promosim.gestionparc.controller;
+
+@Controller
+public class GestionController {
+
+    @Autowired
+    private VehicleService vehicleService;
+
+    //@Autowired
+    //private DriverService driverService;
+
+    //@Autowired
+    //private MissionService missionService;
+
+    @GetMapping("/gestion")
+    public String gestionPage(Model model) {
+        System.out.println(">>> /gestion route hit");
+        model.addAttribute("vehicles", vehicleService.getAllVehicles());
+        //model.addAttribute("drivers", driverService.getAllDrivers());
+        //model.addAttribute("missions", missionService.getAllMissions());
+        return "gestion";  // Your gestion.html page
+    }
+}

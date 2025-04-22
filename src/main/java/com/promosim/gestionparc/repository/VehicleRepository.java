@@ -1,7 +1,6 @@
 package com.promosim.gestionparc.repository;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -16,15 +15,17 @@ import jakarta.transaction.Transactional;
 
 public interface VehicleRepository extends JpaRepository<Vehicle, Long>, JpaSpecificationExecutor<Vehicle> {
 
-    Optional<Vehicle> findByVin(String vin);
-    List<Vehicle> findByIdNotIn(List<Long> ids);
+    
 
+
+    void deleteById(@NonNull Long id);
+    List<Vehicle> findByIdNotIn(List<Long> ids);
 
 
     @Transactional
     @Modifying
-    @Query("DELETE FROM Vehicle v WHERE v.vin = :vin")
-    void deleteByVin(@Param("vin") @NonNull String vin);
+    @Query("DELETE FROM Vehicle v WHERE v.id = :id")
+    void deleteByVin(@Param("id") @NonNull Long id);
 
     @Query("SELECT COUNT(m) > 0 FROM Mission m WHERE m.vehicle.id = :vehicleId AND m.done = false")
 boolean isVehicleAssignedToOngoingMission(@Param("vehicleId") Long vehicleId);

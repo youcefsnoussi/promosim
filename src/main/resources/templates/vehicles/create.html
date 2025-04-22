@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+    <title>Créer un véhicule</title>
+</head>
+<body>
+<h1>Créer un véhicule</h1>
+
+<form th:action="@{/vehicles}" th:object="${vehicle}" method="post">
+    <label for="plateNumber">Immatriculation:</label>
+    <input type="text" th:field="*{plateNumber}" required /><br>
+
+    <label for="brand">Marque:</label>
+    <input type="text" th:field="*{brand}" /><br>
+
+    <label for="model">Modèle:</label>
+    <input type="text" th:field="*{model}" /><br>
+
+    <label for="year">Année:</label>
+    <input type="number" th:field="*{year}" /><br>
+
+    <label for="mileage">Kilométrage:</label>
+    <input type="number" th:field="*{mileage}" /><br>
+
+    <label for="type">Type:</label>
+    <select name="type" id="type">
+        <option value="TRUCK" th:selected="${vehicle.type == 'TRUCK'}">Camion</option>
+        <option value="CAR" th:selected="${vehicle.type == 'CAR'}">Voiture</option>
+        <option value="VAN" th:selected="${vehicle.type == 'VAN'}">Van</option>
+    </select>
+
+    <label for="fuelType">Carburant:</label>
+    <label for="fuelType">Carburant:</label>
+    <select name="fuelType" id="fuelType">
+        <option value="DIESEL" th:selected="${vehicle.fuelType == 'DIESEL'}">Diesel</option>
+        <option value="ESSENCE" th:selected="${vehicle.fuelType == 'ESSENCE'}">Essence</option>
+        <option value="ELECTRIC" th:selected="${vehicle.fuelType == 'ELECTRIC'}">Électrique</option>
+        <option value="HYBRID" th:selected="${vehicle.fuelType == 'HYBRID'}">Hybride</option>
+    </select><br>
+
+    
+
+    <label for="vin">VIN:</label>
+    <input type="text" th:field="*{vin}" required /><br>
+
+    <label for="lastServiceDate">Dernier entretien:</label>
+    <input type="date" th:field="*{lastServiceDate}" /><br>
+
+    <label for="nextServiceDate">Prochain entretien:</label>
+    <input type="date" th:field="*{nextServiceDate}" /><br>
+
+    <label for="insuranceExpiryDate">Expiration assurance:</label>
+    <input type="date" th:field="*{insuranceExpiryDate}" /><br>
+
+    <label for="address">Adresse:</label>
+    <input type="text" th:field="*{address}" /><br>
+
+    <label for="nextMaintenanceDate">Prochaine maintenance:</label>
+    <input type="date" th:field="*{nextMaintenanceDate}" /><br>
+
+    <label for="maintenanceType">Type maintenance:</label>
+    <input type="text" th:field="*{maintenanceType}" /><br>
+
+    <button type="submit">Créer</button>
+    
+</form>
+
+<a th:href="@{/vehicles}">← Retour à la liste</a>
+</body>
+</html>

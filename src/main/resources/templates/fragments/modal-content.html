@@ -1,0 +1,36 @@
+<!-- fragments/modal-content.html -->
+<div th:fragment="missionList">
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteConfirmModalLabel">Confirmer la suppression</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <div th:if="${#lists.isEmpty(missions)}">
+                        <p>Aucune mission en cours pour ce véhicule. Vous pouvez le supprimer.</p>
+                    </div>
+                    <div th:unless="${#lists.isEmpty(missions)}">
+                        <p>Ce véhicule est assigné aux missions suivantes :</p>
+                        <ul>
+                            <li th:each="mission : ${missions}">
+                                <span th:text="${mission.name}">Nom</span> |
+                                <span th:text="${mission.departureLocation}">Départ</span> →
+                                <span th:text="${mission.destination}">Destination</span> |
+                                <span th:text="${mission.departureDate}">Date</span>
+                            </li>
+                        </ul>
+                        <p>Veuillez d'abord désassigner le véhicule de ces missions.</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <form th:action="@{/vehicles/delete/{id}(id=${vehicleId})}" method="post" th:if="${#lists.isEmpty(missions)}">
+                        <button type="submit" class="btn btn-danger">Supprimer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

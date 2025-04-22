@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestion du Parc</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+    <script>
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.style.display = 'none');
+            document.getElementById(tabId).style.display = 'block';
+        }
+
+        window.onload = () => showTab('vehicules');
+    </script>
+</head>
+<body>
+    <h1>Gestion du Parc</h1>
+
+    <div>
+        <button onclick="showTab('vehicles')">Véhicules</button>
+        <button onclick="showTab('drivers')">Conducteurs</button>
+        <button onclick="showTab('missions')">Missions</button>
+    </div>
+
+    <!-- Véhicules -->
+    <div id="vehicles" class="tab-content" style="display:none" th:replace="vehicles/list :: vehicleList"></div>
+
+    <!-- Conducteurs -->
+    <!--<div id="drivers" class="tab-content" style="display:none" th:replace="drivers/list :: driverList"></div> -->
+
+    <!-- Missions -->
+    <!--<div id="missions" class="tab-content" style="display:none" th:replace="missions/list :: missionList"></div> -->
+</body>
+</html>
