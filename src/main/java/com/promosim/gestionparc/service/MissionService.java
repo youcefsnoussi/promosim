@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
+import com.promosim.gestionparc.enums.MissionStatus;
 import com.promosim.gestionparc.model.Mission;
 import com.promosim.gestionparc.repository.MissionRepository;
 import com.promosim.gestionparc.specification.MissionSpecifications;
@@ -27,7 +29,7 @@ public class MissionService {
     }
 
     public List<Mission> searchMissions(Long id, String name, String vehicle, String driver, String destination,
-            String departureLocation, LocalDate departureDate, LocalDate arrivalDate, String missionType, boolean done) {
+            String departureLocation, LocalDate departureDate, LocalDate arrivalDate, String missionType, String status) {
         Specification<Mission> spec = Specification.where(null);
 
         if (id != null) {
@@ -57,8 +59,8 @@ public class MissionService {
         if (missionType != null && !missionType.isEmpty()) {
             spec = spec.and(MissionSpecifications.hasMissionType(missionType.trim()));
         }
-        if (done) {
-            spec = spec.and(MissionSpecifications.isDone(done));
+        if (status != null && !status.isEmpty()) {
+            spec = spec.and(MissionSpecifications.hasStatus(status.trim()));
         }
 
         return missionRepository.findAll(spec);
@@ -66,8 +68,7 @@ public class MissionService {
     }
 
     public Mission getMissionById(Long id) {
-        return missionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Mission not found"));
+        return missionRepository.findById(id).orElse(null); // Return null if not found
     }
 
     @Transactional
@@ -82,7 +83,7 @@ public class MissionService {
                     existing.setDepartureDate(updatedMission.getDepartureDate());
                     existing.setArrivalDate(updatedMission.getArrivalDate());
                     existing.setMissionType(updatedMission.getMissionType());
-                    existing.setDone(updatedMission.isDone());
+                    existing.setStatus(updatedMission.getStatus());
                     existing.setTasks(updatedMission.getTasks());
                     return missionRepository.save(existing);
                 })
@@ -93,6 +94,19 @@ public class MissionService {
         missionRepository.deleteById(id);
     }
     public List<Mission> getActiveMissionsByVehicleId(Long vehicleId) {
-        return missionRepository.findByVehicleIdAndDoneFalse(vehicleId);
+        return missionRepository.findByVehicleIdAndStatus(vehicleId, MissionStatus.ONGOING);
     }
+    public List<Mission> getActiveMissionsByDriverId(Long driverId) {
+        return missionRepository.findByDriverIdAndStatus(driverId, MissionStatus.ONGOING);
+    }
+
+    public void markMissionAsDone(Long id) {
+        Mission mission = getMissionById(id);
+        if (mission == null) {
+            throw new RuntimeException("Mission not found");
+        }
+        mission.setStatus(MissionStatus.COMPLETED);
+        missionRepository.save(mission);
+    }
+   
 }

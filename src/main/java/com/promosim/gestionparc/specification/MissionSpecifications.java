@@ -31,7 +31,22 @@ public class MissionSpecifications {
                 return null;
             }
             Join<Mission, Vehicle> vehicleJoin = root.join("vehicle", JoinType.INNER);
-            return criteriaBuilder.like(criteriaBuilder.lower(vehicleJoin.get("brand")), "%" + vehicle.toLowerCase() + "%");
+            Integer year = null;
+            try {
+                year = Integer.parseInt(vehicle);
+            } catch (NumberFormatException e) {
+                // Not a number, continue with the string search
+            }
+            if (year != null) {
+                return criteriaBuilder.equal(vehicleJoin.get("year"), year);
+            } else {
+            return criteriaBuilder.or(
+            criteriaBuilder.like(criteriaBuilder.lower(vehicleJoin.get("brand")), "%" + vehicle.toLowerCase() + "%"),
+            criteriaBuilder.like(criteriaBuilder.lower(vehicleJoin.get("model")), "%" + vehicle.toLowerCase() + "%"),
+            criteriaBuilder.like(criteriaBuilder.lower(vehicleJoin.get("plateNumber")), "%" + vehicle.toLowerCase() + "%"),
+            criteriaBuilder.like(criteriaBuilder.lower(vehicleJoin.get("vin")), "%" + vehicle.toLowerCase() + "%")
+            );
+            }
         };
     }
     public static Specification<Mission> hasDriver(String driver) {
@@ -40,7 +55,12 @@ public class MissionSpecifications {
                 return null;
             }
             Join<Mission, Driver> driverJoin = root.join("driver", JoinType.INNER);
-            return criteriaBuilder.like(criteriaBuilder.lower(driverJoin.get("firstName")), "%" + driver.toLowerCase() + "%");
+            return criteriaBuilder.or(
+                criteriaBuilder.like(criteriaBuilder.lower(driverJoin.get("firstName")), "%" + driver.toLowerCase() + "%"),
+                criteriaBuilder.like(criteriaBuilder.lower(driverJoin.get("lastName")), "%" + driver.toLowerCase() + "%"),
+                criteriaBuilder.like(criteriaBuilder.lower(driverJoin.get("licenseNumber")), "%" + driver.toLowerCase() + "%"),
+                criteriaBuilder.like(criteriaBuilder.lower(driverJoin.get("phoneNumber")), "%" + driver.toLowerCase() + "%")
+            );
         };
     }
     public static Specification<Mission> hasDestination(String destination) {
@@ -58,8 +78,8 @@ public class MissionSpecifications {
     public static Specification<Mission> hasMissionType(String missionType) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.like(criteriaBuilder.lower(root.get("missionType")), "%" + missionType.toLowerCase() + "%");
     }
-    public static Specification<Mission> isDone(boolean done) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("done"), done);
+    public static Specification<Mission> hasStatus(String status) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("status"), status);
     }
 
     

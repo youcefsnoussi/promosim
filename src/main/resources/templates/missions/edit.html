@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+    <title>Modifier une mission</title>
+</head>
+<body>
+<h1>Modifier une mission</h1>
+
+<form th:action="@{'/missions/edit/' + ${mission.id}}" th:object="${mission}" method="post">
+    <label>Nom du mission:</label>
+    <input type="text" th:field="*{name}" required /><br>
+
+    <label>Type de mission</label>
+    <input type="text" th:field="*{missionType}" /><br>
+
+    <label>Lieu de départ:</label>
+    <input type="text" th:field="*{departureLocation}" /><br>
+    <label>Destination:</label>
+    <input type="text" th:field="*{destination}" /><br>
+    <label>Date de départ:</label>
+    <input type="date" th:field="*{departureDate}" /><br>
+    <label>Date d'arrivée:</label>
+    <input type="date" th:field="*{arrivalDate}" /><br>
+    <label>Conducteur:</label>
+    <select th:field="*{driverId}">
+        <option th:each="driver : ${drivers}" th:value="${driver.id}" th:text="${driver.name}"></option>
+    </select><br>
+    <label>Véhicule:</label>
+    <select th:field="*{vehicleId}">
+        <option th:each="vehicle : ${vehicles}" th:value="${vehicle.id}" th:text="${vehicle.plateNumber}"></option>
+    </select><br>
+    <label>Statut:</label>
+    <select th:field="*{status}">
+        <option value="ONGOING" th:selected="${mission.status == 'ONGOING'}">En cours</option>
+        <option value="COMPLETED" th:selected="${mission.status == 'COMPLETED'}">Terminé</option>
+        <option value="CANCELED" th:selected="${mission.status == 'CANCELED'}">Annulé</option>
+    </select><br>
+    <label>taches</label>
+    <input type="text" th:field="*{tasks}" /><br>
+
+    <button type="submit">Enregistrer les modifications</button>
+</form>
+
+<a th:href="@{/vehicles}">← Retour à la liste</a>
+</body>
+</html>

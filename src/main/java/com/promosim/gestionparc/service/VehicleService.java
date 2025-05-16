@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.promosim.gestionparc.enums.MissionStatus;
 import com.promosim.gestionparc.model.Vehicle;
 import com.promosim.gestionparc.repository.MissionRepository;
 import com.promosim.gestionparc.repository.VehicleRepository;
@@ -45,7 +46,7 @@ public class VehicleService {
         if (optionalVehicle.isPresent()) {
             Vehicle vehicle = optionalVehicle.get();
 
-            boolean isVehicleAssignedToOngoingMission = missionRepository.existsByVehicleIdAndDoneFalse(vehicle.getId());
+            boolean isVehicleAssignedToOngoingMission = missionRepository.existsByVehicleIdAndStatus(vehicle.getId(), MissionStatus.ONGOING);
             if (isVehicleAssignedToOngoingMission) {
                 System.out.println("Vehicle with ID " + id + " is assigned to an ongoing mission and cannot be deleted."); // Add logging
                 throw new IllegalStateException("Ce véhicule est assigné à une mission en cours et ne peut pas être supprimé.");
@@ -121,6 +122,24 @@ public class VehicleService {
                 if (updatedVehicle.getMileage() != null) {
                     existingVehicle.setMileage(updatedVehicle.getMileage());
                 }
+                if(updatedVehicle.getBrand() != null && !updatedVehicle.getBrand().isEmpty()) {
+                    existingVehicle.setBrand(updatedVehicle.getBrand());
+                }
+                if(updatedVehicle.getModel() != null && !updatedVehicle.getModel().isEmpty()) {
+                    existingVehicle.setModel(updatedVehicle.getModel());
+                }
+                if(updatedVehicle.getPlateNumber() != null && !updatedVehicle.getPlateNumber().isEmpty()) {
+                    existingVehicle.setPlateNumber(updatedVehicle.getPlateNumber());
+                }
+                if(updatedVehicle.getType() != null) {
+                    existingVehicle.setType(updatedVehicle.getType());
+                }
+                if(updatedVehicle.getFuelType() != null) {
+                    existingVehicle.setFuelType(updatedVehicle.getFuelType());
+                }
+                if(updatedVehicle.getVin() != null && !updatedVehicle.getVin().isEmpty()) {
+                    existingVehicle.setVin(updatedVehicle.getVin());
+                }
                 if (updatedVehicle.getLastServiceDate() != null) {
                     existingVehicle.setLastServiceDate(updatedVehicle.getLastServiceDate());
                 }
@@ -145,7 +164,7 @@ public class VehicleService {
             .orElseThrow(() -> new RuntimeException("Vehicle not found with ID: " + updatedVehicle.getId()));
     }
     public boolean isVehicleAssignedToAnyMission(Long id) {
-        return missionRepository.existsByVehicleIdAndDoneFalse(id);
+        return missionRepository.existsByVehicleIdAndStatus(id, MissionStatus.ONGOING);
     }
 
 

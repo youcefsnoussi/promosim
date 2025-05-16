@@ -31,8 +31,14 @@
     <option value="VAN" th:selected="${vehicle.type == 'VAN'}">Van</option>
 </select>
 
-    <label>Carburant:</label>
-    <input type="text" th:field="*{fuelType}" /><br>
+<label for="fuelType">Carburant:</label>
+<select name="fuelType" id="fuelType">
+    <option value="">-- Carburant --</option>
+    <option value="DIESEL" th:selected="${param.fuelType != null and param.fuelType == 'DIESEL'}">Diesel</option>
+    <option value="GASOLINE" th:selected="${param.fuelType != null and param.fuelType == 'GASOLINE'}">Essence</option>
+    <option value="ELECTRIC" th:selected="${param.fuelType != null and param.fuelType == 'ELECTRIC'}">Électrique</option>
+    <option value="HYBRID" th:selected="${param.fuelType != null and param.fuelType == 'HYBRID'}">Hybride</option>
+</select>
 
     <label>VIN:</label>
     <input type="text" th:field="*{vin}" readonly /><br>

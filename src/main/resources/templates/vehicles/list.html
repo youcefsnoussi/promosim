@@ -1,27 +1,34 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="fr"
-      th:fragment="vehicleList">
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
 
 <head>
     <meta charset="UTF-8">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+
+    <!-- Your custom styles -->
     <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+    <script th:src="@{/js/app.js}"></script>
     <title>Liste des Véhicules</title>
     
 </head>
 <body>
+    <div th:fragment="vehicleList">
+    <div id="vehicles" class="tab-content">
     <!-- src/main/resources/templates/vehicles/list.html -->
-<div th:fragment="vehicleList">
     <div th:if="${successMessage}" style="color: green; font-weight: bold;">
         <p th:text="${successMessage}"></p>
     </div>
     
     <div th:if="${errorMessage}" style="color: red; font-weight: bold;">
         <p th:text="${errorMessage}"></p>
-    </div>    
+    </div>  
+    
     
     <h1>Liste des Véhicules</h1>
 
     <!-- Section de recherche -->
+    <div id="vehicleSearchPanel" style="display: none;">
     <form th:action="@{/vehicles/search}" method="get">
         <fieldset>
             <legend>Rechercher un véhicule</legend>
@@ -55,12 +62,13 @@
             <button type="submit">Rechercher</button>
         </fieldset>
     </form>
+    </div>
 
     <form th:action="@{/vehicles/create}" method="get" style="display:inline;">
         <button type="submit">Créer un véhicule</button>
     </form>
-
     <!-- Table des véhicules -->
+     <button onclick="toggleVehicleSearchPanel()">🔍 Rechercher</button>
     <table border="1">
         <thead>
             <tr>
@@ -90,46 +98,19 @@
             <td>
                 <a th:href="@{'/vehicles/edit/' + ${vehicle.id}}">Modifier</a>
                 <button type="button" class="btn btn-danger btn-sm" 
-                        th:attr="onclick='showDeleteModal(' + ${vehicle.id} + ')'">
+                        th:attr="onclick='showVehicleDeleteModal(' + ${vehicle.id} + ')'">
                     Supprimer
                 </button>
             </td>
         </tr>
         </tbody>
     </table>
-
-    <div id="dynamicModalContainer"></div>
-
-    <script>
-    let vehicleToDeleteId = null;
-
-    function showDeleteModal(id) {
-        vehicleToDeleteId = id;
-
-        fetch(`/vehicles/${id}/delete-confirmation`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Erreur de chargement du contenu du modal");
-                }
-                return response.text();
-            })
-            .then(html => {
-                document.getElementById('dynamicModalContainer').innerHTML = html;
-                const deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
-                deleteModal.show();
-            })
-            .catch(error => console.error("Erreur lors du chargement du modal :", error));
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        document.addEventListener('click', function (event) {
-            if (event.target && event.target.id === 'confirmDeleteBtn') {
-                if (vehicleToDeleteId !== null) {
-                    window.location.href = `/vehicles/delete/${vehicleToDeleteId}`;
-                }
-            }
-        });
-    });
-    </script>
+    </div>
+  
 </div>
+</div>
+    <!-- Bootstrap JS (including Popper.js) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
 

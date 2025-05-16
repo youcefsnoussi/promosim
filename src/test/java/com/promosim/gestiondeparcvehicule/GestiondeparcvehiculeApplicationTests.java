@@ -1,4 +1,4 @@
-package com.pormosim.gestiondeparcvehicule;
+package com.promosim.gestiondeparcvehicule;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

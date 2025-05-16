@@ -1,6 +1,6 @@
-<!-- fragments/modal-content.html -->
+<!-- fragments/modal-content-driver.html -->
 <div th:fragment="missionList">
-    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+    <div class="modal fade" id="deleteDriverModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -9,10 +9,10 @@
                 </div>
                 <div class="modal-body">
                     <div th:if="${#lists.isEmpty(missions)}">
-                        <p>Aucune mission en cours pour ce véhicule. Vous pouvez le supprimer.</p>
+                        <p>Aucune mission en cours pour ce conducteur. Vous pouvez le supprimer.</p>
                     </div>
                     <div th:unless="${#lists.isEmpty(missions)}">
-                        <p>Ce véhicule est assigné aux missions suivantes :</p>
+                        <p>Ce conducteur est assigné aux missions suivantes :</p>
                         <ul>
                             <li th:each="mission : ${missions}">
                                 <span th:text="${mission.name}">Nom</span> |
@@ -21,16 +21,15 @@
                                 <span th:text="${mission.departureDate}">Date</span>
                             </li>
                         </ul>
-                        <p>Veuillez d'abord désassigner le véhicule de ces missions.</p>
+                        <p>Veuillez d'abord désassigner le conducteur de ces missions.</p>
                     </div>
                 </div>
-                    <div class="modal-footer">
+                <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                    <form th:action="@{/vehicles/delete/{id}(id=${vehicleId})}" method="post" th:if="${#lists.isEmpty(missions)}">
+                    <form th:action="@{/drivers/delete/{id}(id=${driverId})}" method="post" th:if="${#lists.isEmpty(missions)}">
                         <button type="submit" class="btn btn-danger">Supprimer</button>
                     </form>
-                    </div>
-                
+                </div>
             </div>
         </div>
     </div>

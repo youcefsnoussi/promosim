@@ -4,19 +4,26 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.promosim.gestionparc.model.Driver;
+import com.promosim.gestionparc.model.Mission;
 import com.promosim.gestionparc.service.DriverService;
 import com.promosim.gestionparc.service.MissionService;
 import com.promosim.gestionparc.service.VehicleService;
+
+import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/drivers")
@@ -42,7 +49,7 @@ public String showGestionPage(Model model) {
     public String listDrivers(Model model){
         List<Driver> drivers = driverService.getAllDrivers();
         model.addAttribute("drivers", drivers);
-        return "drivers/list"; // Return the name of the view to render (e.g., Thymeleaf template)
+        return "gestion"; // Return the name of the view to render (e.g., Thymeleaf template)
     }
 
     @GetMapping("/create")
@@ -52,25 +59,29 @@ public String showGestionPage(Model model) {
         return "drivers/create"; // Return the name of the view to render (e.g., Thymeleaf template)
     }
 
-    @PostMapping("/create")
-    public String createDriver(@ModelAttribute Driver driver){
+    @PostMapping("")
+    public String createDriver(@Valid @ModelAttribute("driver") Driver driver, BindingResult result) {
+        System.out.println("Creating driver: " + driver);
+        if(result.hasErrors()) {
+            return "drivers/create"; // Return to the form view if there are validation errors
+        }
         driverService.createDriver(driver);
-        return "redirect:/drivers"; // Redirect to the list of drivers after creation
+        return "redirect:/gestion";
     }
 
-    @GetMapping("edit/{id}")
-    public String showEditForm(@PathVariable Long id, Model model){
-        Driver driver = driverService.getAllDrivers().stream()
-                .filter(d -> d.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Driver not found."));
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable("id") Long id, Model model) {
+        Driver driver = driverService.getDriverById(id);
         model.addAttribute("driver", driver);
-        return "drivers/edit"; // Return the name of the view to render (e.g., Thymeleaf template)
-    }
-    @PostMapping("/edit")
-    public String updateDriver(@ModelAttribute Driver driver){
-        driverService.updateDriver(driver);
-        return "redirect:/drivers"; // Redirect to the list of drivers after update
+        return "drivers/edit"; // Return the name of the view (e.g., edit.html) 
+    }  
+    @PostMapping("/edit/{id}")
+    public String updateDriver(@Valid @ModelAttribute("driver") Driver driver, BindingResult result) {
+        if(result.hasErrors()) {
+            return "drivers/edit"; // Return to the form view if there are validation errors
+        }
+        driverService.updateDriver(driver); 
+        return "redirect:/gestion"; 
     }
 
     @GetMapping("/search")
@@ -85,11 +96,33 @@ public String showGestionPage(Model model) {
         Model model) {
         List<Driver> drivers = driverService.searchDrivers(id, firstName, lastName, phoneNumber, licenseNumber, homeAddress, dateOfBirth);
         model.addAttribute("drivers", drivers);
-        return "drivers/list"; // Return the name of the view to render (e.g., Thymeleaf template)
+        model.addAttribute("activeTab", "drivers");
+        return "gestion"; // Return the name of the view to render (e.g., Thymeleaf template)
     }
-    @GetMapping("/delete/{id}")
-    public String deleteDriver(@PathVariable Long id){
+
+    @GetMapping("/{id}/delete-confirmation")
+    public String getDeleteConfirmationModal(@PathVariable Long id, Model model){
+        Driver driver = driverService.getDriverById(id);
+        if (driver == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Driver not found");
+        }
+        List<Mission> missions = missionService.getActiveMissionsByDriverId(id);
+        model.addAttribute("missions", missions);
+        model.addAttribute("driverId", id);
+        return "fragments/modal-content-driver :: missionList";
+    }
+
+
+
+
+    @PostMapping("/delete/{id}")
+    public String deleteDriver(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        if (driverService.isDriverAssignedToAnyMission(id)) {
+            redirectAttributes.addFlashAttribute("error", "Le conducteur est affecté à une mission et ne peut pas être supprimé.");
+            return "redirect:/drivers"; // Redirect to the list of drivers with an error message
+        }
         driverService.deleteDriverById(id);
-        return "redirect:/drivers"; // Redirect to the list of drivers after deletion
+        redirectAttributes.addFlashAttribute("success", "Conducteur supprimé avec succès.");
+        return "redirect:/gestion";
     }
 }

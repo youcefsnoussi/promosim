@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+        <title>Créer une mission</title>
+    </head>
+    <body>
+        <h1>Créer une Mission</h1>
+        <form th:action="@{/missions/create}" th:object="${mission}" method="post">
+            <label for="name">Nom de mission</label>
+            <input type="text" id="name" th:field="*{name}" required><br>
+            <label for="missionType">Type de mission</label>
+            <input type="text" id="missionType" th:field="*{missionType}" required><br>
+            <label for="departureLocation">Lieu de départ</label>
+            <input type="text" id="departureLocation" th:field="*{departureLocation}" required><br>
+            <label for="destination">Destination</label>
+            <input type="text" id="destination" th:field="*{destination}" required><br>
+            <label for="departureDate">Date de départ</label>
+            <input type="date" id="departureDate" th:field="*{departureDate}" required><br>
+            <label for="arrivalDate">Date d'arrivée</label>
+            <input type="date" id="arrivalDate" th:field="*{arrivalDate}" required><br>
+            <label for="tasks">Tâches</label>
+            <input type="text" id="tasks" th:field="*{tasks}" required><br>
+            <label for="driver">Conducteurs disponibles:</label>
+            <select id="driver" th:field="*{driver}" required>
+                <option value="" disabled selected>-- Sélectionner un conducteur --</option>
+                <option th:each="driver : ${drivers}" th:value="${driver.id}" th:text="${driver.firstName + ' ' + driver.lastName}">
+                </option>
+            </select><br>
+            <label for="vehicle">Véhicules disponibles:</label>
+            <select id="vehicle" th:field="*{vehicle}" required>
+                <option value="" disabled selected>-- Sélectionner un véhicule --</option>
+                <option th:each="vehicle : ${vehicles}" th:value="${vehicle.id}" th:text="${vehicle.brand + ' ' + vehicle.model + ' ' + vehicle.type + ' ' + vehicle.plateNumber}">
+                </option>
+            </select><br>
+            <button type="submit">Créer</button>
+            <a th:href="@{/gestion}">Annuler</a>
+        </form>
+        </body>
+        </html>
+

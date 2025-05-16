@@ -27,8 +27,7 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long>, JpaSpec
     @Query("DELETE FROM Vehicle v WHERE v.id = :id")
     void deleteByVin(@Param("id") @NonNull Long id);
 
-    @Query("SELECT COUNT(m) > 0 FROM Mission m WHERE m.vehicle.id = :vehicleId AND m.done = false")
-boolean isVehicleAssignedToOngoingMission(@Param("vehicleId") Long vehicleId);
-
+    @Query("SELECT COUNT(m) > 0 FROM Mission m WHERE m.vehicle.id = :vehicleId AND m.status = ONGOING")
+    boolean existsByVehicleIdAndStatus(@Param("vehicleId") Long vehicleId, @Param("status") String status);
 
 }

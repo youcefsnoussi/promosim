@@ -2,8 +2,12 @@ package com.promosim.gestionparc.model;
 
 import java.time.LocalDate;
 
+import com.promosim.gestionparc.enums.MissionStatus;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -42,7 +46,8 @@ public class Mission {
     private LocalDate departureDate;
     private LocalDate arrivalDate;
     private String missionType;
-    private boolean done;
+    @Enumerated(EnumType.STRING)
+    private MissionStatus status;
 
     @Column(length = 1000)
     private String tasks;

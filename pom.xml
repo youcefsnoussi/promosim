@@ -5,10 +5,10 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.4.4</version>
+		<version>3.4.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.pormosim</groupId>
+	<groupId>com.promosim</groupId>
 	<artifactId>gestiondeparcvehicule</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>gestiondeparcvehicule</name>
@@ -52,8 +52,7 @@
 		</dependency>
 		<dependency>
     		<groupId>org.projectlombok</groupId>
-    		<artifactId>lombok</artifactId>
-    		<version>1.18.24</version> <!-- You can check for the latest version -->
+    		<artifactId>lombok</artifactId> <!-- You can check for the latest version -->
     		<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -64,7 +63,6 @@
 		<dependency>
     	<groupId>jakarta.persistence</groupId>
     	<artifactId>jakarta.persistence-api</artifactId>
-    	<version>3.1.0</version>
 		</dependency>
 		<dependency>
     		<groupId>org.springframework.boot</groupId>
@@ -78,15 +76,16 @@
 	</dependencies>
 
 	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-        			<mainClass>com.company.gestionparc.GestionDeParcVehiculeApplication</mainClass>
-    			</configuration>
-			</plugin>
-		</plugins>
-	</build>
+    <plugins>
+        <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+			<configuration>
+				<mainClass>com.promosim.gestionparc.GestionDeParcVehiculeApplication</mainClass>
+			</configuration>
+        </plugin>
+    </plugins>
+</build>
+
 
 </project>

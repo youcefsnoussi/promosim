@@ -49,32 +49,12 @@ public String showGestionPage(Model model) {
 
 
 @GetMapping("")
-public String listVehicles(
-        @RequestParam(required = false) String plateNumber,
-        @RequestParam(required = false) String brand,
-        @RequestParam(required = false) String model,
-        @RequestParam(required = false) Integer year,
-        @RequestParam(required = false) Integer mileage,
-        @RequestParam(required = false) String type,
-        @RequestParam(required = false) String fuelType,
-        @RequestParam(required = false) String vin,
-        @RequestParam(required = false) String address,
-        Model modelAttr) {
-
-    boolean hasFilters = plateNumber != null || brand != null || model != null || year != null ||
-    mileage != null || type != null || fuelType != null || vin != null || address != null;
-
-    List<Vehicle> vehicles;
-    if (hasFilters) {
-        vehicles = vehicleService.searchVehicles(null, brand, model, plateNumber, type, fuelType, vin,
-    null, null, null, address, null, null);
-    } else {
-        vehicles = vehicleService.getAllVehicles();
-    }
-
-    modelAttr.addAttribute("vehicles", vehicles);
-    return "vehicles/list";
+public String listVehicles(Model model) {
+    List<Vehicle> vehicles = vehicleService.getAllVehicles(); // Fetch all vehicles
+    model.addAttribute("vehicles", vehicles); // Add vehicles to the model
+    return "gestion"; // Return the name of the view (e.g., list.html)
 }
+
 
 
     @GetMapping("/create")
@@ -90,7 +70,7 @@ public String listVehicles(
             return "vehicles/create"; // Return to the form view if there are validation errors
         }
         vehicleService.createVehicle(vehicle);
-        return "redirect:/vehicles"; // Redirect to the list of vehicles after creation
+        return "redirect:/gestion"; // Redirect to the list of vehicles after creation
     }
     
 
@@ -115,18 +95,17 @@ public String searchVehicles(
             lastServiceDate, nextServiceDate, insuranceExpiryDate, address, nextMaintenanceDate, maintenanceType);
 
     modelAttr.addAttribute("vehicles", vehicles);
-
-    return "vehicles/list";
+    modelAttr.addAttribute("activeTab", "vehicles"); // Set the active tab to "vehicles"
+    return "gestion";
 }
 
     
 
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable("id") Long id, Model model) {
-        Vehicle vehicle = vehicleService.getVehicleById(id); // Assuming you have a method to get a vehicle by VIN
+        Vehicle vehicle = vehicleService.getVehicleById(id);
         model.addAttribute("vehicle", vehicle);
-        return "vehicles/edit"; // Return the name of the view (e.g., edit.html)
-        
+        return "vehicles/edit"; // Return the name of the view (e.g., edit.html) 
     }    
 
 
@@ -136,7 +115,7 @@ public String searchVehicles(
             return "vehicles/edit"; // Return to the form view if there are validation errors
         }
         vehicleService.updateVehicle(vehicle); // Assuming createVehicle also handles updates
-        return "redirect:/vehicles"; // Redirect to the list of vehicles after update
+        return "redirect:/gestion"; // Redirect to the list of vehicles after update
     }
 
 
@@ -158,7 +137,7 @@ public String searchVehicles(
 
 
 
-    @GetMapping("/delete/{id}")
+    @PostMapping("/delete/{id}")
     public String deleteVehicle(@PathVariable Long id, RedirectAttributes redirectAttributes) {
     System.out.println("🚨 Controller hit: trying to delete vehicle with ID = " + id);
 
@@ -170,7 +149,7 @@ public String searchVehicles(
 
     vehicleService.deleteVehicle(id);
     redirectAttributes.addFlashAttribute("successMessage", "Véhicule supprimé avec succès.");
-    return "redirect:/vehicles";
+    return "redirect:/gestion";
     }
 
     @GetMapping("/missions-assigned/{vehicleId}")

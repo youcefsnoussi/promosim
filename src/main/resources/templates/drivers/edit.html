@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+    <title>Modifier un conducteur</title>
+</head>
+<body>
+<h1>Modifier un conducteur</h1>
+
+<form th:action="@{'/drivers/edit/' + ${driver.id}}" th:object="${driver}" method="post">
+    <label for="firstName">Prénom:</label>
+    <input type="text" th:field="*{firstName}"/><br>
+    <label for="lastName">Nom:</label>
+    <input type="text" th:field="*{lastName}"/><br>
+    <label for="phoneNumber">Téléphone:</label>
+    <input type="number" th:field="*{phoneNumber}"/><br>
+    <label for="licenseNumber">Numéro de permis:</label>
+    <input type="number" th:field="*{licenseNumber}"/><br>
+    <label for="dateOfBirth">Date de naissance:</label>
+    <input type="date" th:field="*{dateOfBirth}"/><br>
+    <label for="homeAddress">Adresse:</label>
+    <input type="text" th:field="*{homeAddress}"/><br>
+    <button type="submit">Enregistrer les modifications</button>
+</form>
+
+<a th:href="@{/drivers}">← Retour à la liste</a>
+</body>
+</html>
