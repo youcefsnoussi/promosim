@@ -46,8 +46,9 @@ public class Mission {
     private LocalDate departureDate;
     private LocalDate arrivalDate;
     private String missionType;
+    @Builder.Default
     @Enumerated(EnumType.STRING)
-    private MissionStatus status;
+    private MissionStatus status = MissionStatus.ONGOING;
 
     @Column(length = 1000)
     private String tasks;

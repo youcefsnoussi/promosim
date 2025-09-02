@@ -60,7 +60,7 @@ public String showGestionPage(Model model) {
     }
 
     @PostMapping("")
-    public String createDriver(@Valid @ModelAttribute("driver") Driver driver, BindingResult result) {
+    public String createDriver(@Valid @ModelAttribute Driver driver, BindingResult result) {
         System.out.println("Creating driver: " + driver);
         if(result.hasErrors()) {
             return "drivers/create"; // Return to the form view if there are validation errors
@@ -70,13 +70,13 @@ public String showGestionPage(Model model) {
     }
 
     @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable("id") Long id, Model model) {
+    public String showEditForm(@PathVariable Long id, Model model) {
         Driver driver = driverService.getDriverById(id);
         model.addAttribute("driver", driver);
         return "drivers/edit"; // Return the name of the view (e.g., edit.html) 
     }  
     @PostMapping("/edit/{id}")
-    public String updateDriver(@Valid @ModelAttribute("driver") Driver driver, BindingResult result) {
+    public String updateDriver(@Valid @ModelAttribute Driver driver, BindingResult result) {
         if(result.hasErrors()) {
             return "drivers/edit"; // Return to the form view if there are validation errors
         }

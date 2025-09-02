@@ -82,3 +82,33 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+
+// ============= Mark As Complete ============
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll(".mark-done-btn").forEach(button =>{
+        button.addEventListener("click", async () => {
+            const missionId = button.dataset.id;
+
+            try {
+                const response = await fetch(`/missions/${missionId}/complete`, {
+                    method: "POST"
+                });
+                if (response.ok){
+                    const data = await response.json();
+                    const row = button.closest("tr");
+                    const statusCell = row.querySelector(".mission-status");
+                    statusCell.textContent = data.status;
+                    button.remove();
+                } else{
+                    alert("Erreur lors de la mise à jour du statut de la mission.");
+                }
+            } catch(err) {
+                console.error(err);
+                alert("Erreur lors de la mise à jour du statut de la mission.");
+            }
+        });
+    });
+});
+

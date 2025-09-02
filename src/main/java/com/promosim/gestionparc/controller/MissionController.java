@@ -2,10 +2,11 @@ package com.promosim.gestionparc.controller;
 
 import java.time.LocalDate;
 import java.util.List;
-
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -21,6 +23,7 @@ import com.promosim.gestionparc.enums.MissionStatus;
 import com.promosim.gestionparc.model.Driver;
 import com.promosim.gestionparc.model.Mission;
 import com.promosim.gestionparc.model.Vehicle;
+import com.promosim.gestionparc.repository.MissionRepository;
 import com.promosim.gestionparc.service.DriverService;
 import com.promosim.gestionparc.service.MissionService;
 import com.promosim.gestionparc.service.VehicleService;
@@ -39,6 +42,8 @@ public class MissionController {
     @Autowired
     private DriverService driverService;
 
+    @Autowired
+    private MissionRepository missionRepository;
 
     @GetMapping("/gestion")
     public String showGestionPage(Model model) {
@@ -129,18 +134,17 @@ public class MissionController {
     redirectAttributes.addFlashAttribute("successMessage", "Mission supprimée avec succès.");
     return "redirect:/gestion";
     }
-    @PostMapping("/{id}/mark-done")
-    public String markMissionAsDone(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        Mission mission = missionService.getMissionById(id);
-        if (mission == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Mission not found");
-        }
-        missionService.markMissionAsDone(id);
-        redirectAttributes.addFlashAttribute("successMessage", "Mission marquée comme terminée.");
-        return "redirect:/gestion";
-    }
-    
-    
+
+
+   @PostMapping("/{id}/complete")
+   @ResponseBody
+   public ResponseEntity<?> markAsDone(@PathVariable Long id){
+    Mission mission = missionRepository.findById(id).orElseThrow(() -> new RuntimeException("Mission not found"));
+    mission.setStatus(MissionStatus.COMPLETED);
+    missionService.updateMission(mission);
+
+    return ResponseEntity.ok(Map.of("id", mission.getId(), "status", mission.getStatus().name()));
+   }
 
     
 

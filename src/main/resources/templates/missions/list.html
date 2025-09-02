@@ -63,12 +63,14 @@
                     <td th:text="${mission.destination}">-</td>
                     <td th:text="${#temporals.format(mission.departureDate, 'dd/MM/yyyy')}">-</td>
                     <td th:text="${#temporals.format(mission.arrivalDate, 'dd/MM/yyyy')}">-</td>
-                    <td th:text="${mission.driver != null ? mission.driver.firstName + ' ' + mission.driver.lastName : 'N/A'}">-</td>
-                    <td th:text="${mission.vehicle != null ? mission.vehicle.plateNumber : 'N/A'}">-</td>
+                    <td th:text="${mission.driver != null ? mission.driver.firstName.concat(' ').concat(mission.driver.lastName) : 'N/A'}">-</td>
+                    <td th:text="${mission.vehicle != null ? mission.vehicle.plateNumber : 'N/A'}">-</td> 
+                    <td class="mission-status" th:text="${mission.status}">-</td>
                     <td>
                         <a th:href="@{'/missions/edit/' + ${mission.id}}">Modifier</a>
                         <button type="button" class="btn btn-danger btn-sm"
-                        th:attr="onclick='showMissionDeleteModal(' + ${mission.id} + ');'">Supprimer</button>            
+                        th:onclick="'showMissionDeleteModal(' + ${mission.id} + ');'">Supprimer</button>
+                        <button class="mark-done-btn" data-id="[[${mission.id}]]">Marquer comme terminé</button>
                     </td>
                 </tr>
             </tbody>

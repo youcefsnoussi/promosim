@@ -25,6 +25,8 @@
 </head>
 <body>
     <h1>Gestion du Parc</h1>
+    <div th:if="${isAdmin}" style="color: green;">Bienvenue, Admin <span th:text="${username}"></span>!</div>
+    <div th:if="${!isAdmin}" style="color: blue;">Bienvenue, utilisateur <span th:text="${username}"></span>!</div>
 
     <div>
         <button onclick="showTab('vehicles')">Véhicules</button>

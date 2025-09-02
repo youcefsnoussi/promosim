@@ -64,7 +64,7 @@ public String listVehicles(Model model) {
     }
 
     @PostMapping("")
-    public String createVehicle(@Valid @ModelAttribute("vehicle") Vehicle vehicle, BindingResult result) {
+    public String createVehicle(@Valid @ModelAttribute Vehicle vehicle, BindingResult result) {
         System.out.println("Creating vehicle: " + vehicle);
         if(result.hasErrors()) {
             return "vehicles/create"; // Return to the form view if there are validation errors
@@ -102,7 +102,7 @@ public String searchVehicles(
     
 
     @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable("id") Long id, Model model) {
+    public String showEditForm(@PathVariable Long id, Model model) {
         Vehicle vehicle = vehicleService.getVehicleById(id);
         model.addAttribute("vehicle", vehicle);
         return "vehicles/edit"; // Return the name of the view (e.g., edit.html) 
@@ -110,7 +110,7 @@ public String searchVehicles(
 
 
     @PostMapping("/edit/{id}")
-    public String updateVehicle(@Valid @ModelAttribute("vehicle") Vehicle vehicle, BindingResult result) {
+    public String updateVehicle(@Valid @ModelAttribute Vehicle vehicle, BindingResult result) {
         if(result.hasErrors()) {
             return "vehicles/edit"; // Return to the form view if there are validation errors
         }
