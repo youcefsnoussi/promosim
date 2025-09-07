@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.promosim.gestionparc.enums.MissionStatus;
 import com.promosim.gestionparc.model.Driver;
+import com.promosim.gestionparc.model.Mission;
 import com.promosim.gestionparc.repository.DriverRepository;
 import com.promosim.gestionparc.specification.DriverSpecifications;
 import com.promosim.gestionparc.repository.MissionRepository;
@@ -122,7 +123,16 @@ public class DriverService {
     public boolean isDriverAssignedToAnyMission(Long id) {
         return missionRepository.existsByDriverIdAndStatus(id, MissionStatus.ONGOING);
     }
-    
+
+    public void unlinkDriverFromMissions(Long driverId) {
+        List<Mission> missions = missionRepository.findByDriverId(driverId);
+        for (Mission mission : missions) {
+            mission.setDriver(null);
+            missionRepository.save(mission);
+        }
+        
+       
+    }
 
 
 

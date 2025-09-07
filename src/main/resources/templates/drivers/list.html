@@ -65,6 +65,9 @@
             <td th:text="${driver.homeAddress}"></td>
             <td>
                 <a th:href="@{'/drivers/edit/' + ${driver.id}}" class="btn btn-primary btn-sm">Modifier</a>
+                <form th:action="@{'/drivers/unlink/' + ${driver.id}}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-warning btn-sm">Dissocier des missions</button>
+                </form>
                 <button type="button" class="btn btn-danger btn-sm" 
                         th:attr="onclick='showDriverDeleteModal(' + ${driver.id} + ')'">
                     Supprimer

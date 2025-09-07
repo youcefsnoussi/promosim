@@ -125,4 +125,11 @@ public String showGestionPage(Model model) {
         redirectAttributes.addFlashAttribute("success", "Conducteur supprimé avec succès.");
         return "redirect:/gestion";
     }
+
+    @PostMapping("/unlink/{id}")
+    public String unlinkDriver(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        driverService.unlinkDriverFromMissions(id);
+        redirectAttributes.addFlashAttribute("success", "Conducteur dissocié des missions avec succès.");
+        return "redirect:/gestion";
+    }
 }
